@@ -8,20 +8,15 @@
 #include "mqtt.h"
 
 #define REQ_START           "/"
-#define REQ_MODES           "/mod"
-#define REQ_ACTIONS         "/act"
 
 #define REQ_INFO            "/inf"
 #define REQ_FACTORY_RESET   "/fcr"
 #define REQ_OTA             "/ota"
 
 #define REQ_CONFIG          "/cnf"
-#define REQ_CONF_MODES      "/cmo"
-#define REQ_CONF_DISPLAY    "/cdi"
 #define REQ_CONF_NETWORK    "/cne"
 #define REQ_CONF_MQTT       "/cmq"
 #define REQ_CONF_MISC       "/cmi"
-#define REQ_CONF_LDR        "/cld"
 
 #define REQ_CONSOLE         "/con"
 #define REQ_OTA_SELECT      "/otasel"
@@ -105,7 +100,7 @@ const char SITE_HEAD[]          PROGMEM = QUOTE(    <html>
                                                             </style>
                                                         </head>);
 
-const char SITE_BGN[]           PROGMEM    =  QUOTE(    <body>
+const char SITE_BGN_FULL[]           PROGMEM    =  QUOTE(    <body>
                                                             <div style="text-align:left;display:inline-block;min-width:340px;">
                                                                 <div style="text-align:center;">                                                            
                                                                     <h2>{phead}</h2>
@@ -114,25 +109,34 @@ const char SITE_BGN[]           PROGMEM    =  QUOTE(    <body>
                                                                     <legend>
                                                                         <b>{pcat}</b>
                                                                     </legend>);
-const char SITE_END[]           PROGMEM    = QUOTE(             </fieldset>
+const char SITE_END_FULL[]           PROGMEM    = QUOTE(             </fieldset>
                                                             </div>
                                                         </body>
                                                     </html>);
 
-const char SITE_BGN_FULL[]      PROGMEM    =  QUOTE(    <body>
+const char SITE_BGN[]      PROGMEM    =  QUOTE(    <body>
                                                             <div style="text-align:left;display:inline-block;min-width:340px;">
                                                                 <div style="text-align:center;">                                                            
                                                                     <h2>{phead}</h2>
                                                                 </div>);
-const char SITE_END_FULL[]      PROGMEM    = QUOTE(         </div>
+const char SITE_END[]      PROGMEM    = QUOTE(         </div>
                                                         </body>
                                                     </html>);
+
+const char SITE_FIELDSET_BGN[]      PROGMEM    =  QUOTE(    <fieldset>
+                                                        <legend>
+                                                            <b>{pcat}</b>
+                                                        </legend>);
+
+const char SITE_FIELDSET_END[]      PROGMEM    = QUOTE(     </fieldset>);
 
 const char SITE_FORM_BGN[]      PROGMEM    = QUOTE( <form method="post" action="{dest}">);
 const char SITE_FORM_END[]      PROGMEM    = QUOTE( </form>);
 
 const char SITE_DL_BGN[]        PROGMEM    = QUOTE( <dl>);
 const char SITE_DL_END[]        PROGMEM    = QUOTE( </dl>);
+
+const char SITE_NL[]        PROGMEM    = QUOTE( <br/>);
 
 const char SITE_DL_LINE[]       PROGMEM    = QUOTE( <dt><b>{tit}</b>:</dt>
                                                     <dd>{val}</dd>);

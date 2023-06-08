@@ -51,13 +51,13 @@ void WebsiteAction(){
         if(reqReboot > 0 ){
             //Seite muss neu geladen werden. Nach X sekunden wird redirected
             String page = FPSTR(SITE_HEAD);    
-            page += FPSTR(SITE_BGN); 
+            page += FPSTR(SITE_BGN_FULL); 
 
             page.replace("{phead}", message);    
             page.replace("{pcat}" , "Restarting...");
     
             page += FPSTR(SITE_RELOAD_WAIT); 
-            page += FPSTR(SITE_END); 
+            page += FPSTR(SITE_END_FULL); 
 
             WebsiteSend(page);  
             
@@ -71,9 +71,14 @@ void WebsiteStartPage(){
 
     String page = FPSTR(SITE_HEAD);    
     page += FPSTR(SITE_BGN);  
-    page.replace("{pcat}" , F("Home"));
 
-    if(settings.u_DISPLAYON){
+    page += FPSTR(SITE_DL_LINE);  
+    page.replace("{tit}", F("Flash Chip ID"));
+    page.replace("{val}", String("TODO CHIPID") );
+    
+    page += FPSTR(SITE_NL); 
+    
+    if(settings.u_ONSTATE){
         page += FPSTR(SITE_HREF_EXT);  
         page.replace("{tit}", F("ON"));
         page.replace("{id}",  F("ACTION"));
@@ -87,23 +92,10 @@ void WebsiteStartPage(){
         page.replace("{val}", F("ONOFF"));
         page.replace("{col}", F("bred"));
         page.replace("{dest}", REQ_START);
-    }
+    }   
 
-    page += FPSTR(SITE_HREF);  
-    page.replace("{tit}", F("Modes"));
-    page.replace("{dest}", REQ_MODES);
-
-    page += FPSTR(SITE_HREF);  
-    page.replace("{tit}", F("Modes Settings"));
-    page.replace("{dest}", REQ_CONF_MODES);
-
-    page += FPSTR(SITE_HREF);  
-    page.replace("{tit}", F("Display Settings"));
-    page.replace("{dest}", REQ_CONF_DISPLAY);
-
-    page += FPSTR(SITE_HREF);  
-    page.replace("{tit}", F("Actions"));
-    page.replace("{dest}", REQ_ACTIONS);
+    page += FPSTR(SITE_NL); 
+    page += FPSTR(SITE_NL); 
 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Infos"));
@@ -126,7 +118,7 @@ void WebsiteConsolePage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN_FULL); 
+    page += FPSTR(SITE_BGN); 
     page.replace("{phead}", "Console");    
 
     page += FPSTR(SITE_CONSOLE);
@@ -135,7 +127,7 @@ void WebsiteConsolePage(){
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_START);
 
-    page += FPSTR(SITE_END_FULL); 
+    page += FPSTR(SITE_END); 
 
     WebsiteSend(page);  
 }
@@ -144,12 +136,13 @@ void WebsiteFirmwareUpdate(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("Fimrwareupdate"));
 
     page += FPSTR(SITE_UPDATE_FORM);
     page.replace("{dest}" , REQ_OTA);
 
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_CONFIG);
@@ -164,7 +157,7 @@ void WebsiteFactoryResetPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("Factory Reset"));
 
     page += FPSTR(SITE_FORM_BGN);
@@ -190,7 +183,7 @@ void WebsiteFactoryResetPage(){
 
     page += FPSTR(SITE_FORM_END);
 
-    page += FPSTR(SITE_END); 
+    page += FPSTR(SITE_END_FULL); 
     
     WebsiteSend(page);  
 }
@@ -199,7 +192,7 @@ void WebsiteInfoPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("Infos"));
 
     page += FPSTR(SITE_DL_BGN);  
@@ -288,6 +281,7 @@ void WebsiteInfoPage(){
     
     page += FPSTR(SITE_DL_END);  
     
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_START);
@@ -302,7 +296,7 @@ void WebsiteConfigPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);   
+    page += FPSTR(SITE_BGN_FULL);   
     page.replace("{pcat}" , F("Config"));
 
     page += FPSTR(SITE_HREF);  
@@ -337,8 +331,9 @@ void WebsiteConfigPage(){
     page.replace("{col}", F("bred"));
     page.replace("{dest}", REQ_FACTORY_RESET);
 
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
-    page.replace("{tit}", F("Home"));
+    page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_START);
    
     page += FPSTR(SITE_END); 
@@ -350,7 +345,7 @@ void WebsiteNetworkConfigPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("Network Config"));
     
     page += FPSTR(SITE_FORM_BGN);  
@@ -385,6 +380,7 @@ void WebsiteNetworkConfigPage(){
 
     page += FPSTR(SITE_FORM_END);  
     
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_CONFIG);
@@ -398,7 +394,7 @@ void WebsiteMQTTConfigPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("MQTT Config"));
     
     page += FPSTR(SITE_FORM_BGN);  
@@ -450,6 +446,7 @@ void WebsiteMQTTConfigPage(){
 
     page += FPSTR(SITE_FORM_END); 
 
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_CONFIG);
@@ -463,7 +460,7 @@ void WebsiteMiscConfigPage(){
     WebsiteAction();
 
     String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
+    page += FPSTR(SITE_BGN_FULL);  
     page.replace("{pcat}" , F("Misc. Config"));
     
     page += FPSTR(SITE_FORM_BGN);  
@@ -483,34 +480,6 @@ void WebsiteMiscConfigPage(){
     page.replace("{oopt}", (settings.u_MQTT == 0) ? F("selected") : F(""));
     page += FPSTR(SITE_INP_CBX_END);  
     
-    page += FPSTR(SITE_INP_CBX_BGN);  
-    page.replace("{tit}", F("use LDR"));
-    page.replace("{val}", String(settings.u_LDR));
-    page.replace("{id}",  F(U_LDR_TAG)); 
-    page += FPSTR(SITE_INP_CBX_OPT);  
-    page.replace("{otit}", F("yes"));
-    page.replace("{oval}", F("1"));
-    page.replace("{oopt}", (settings.u_LDR == 1) ? F("selected") : F(""));
-    page += FPSTR(SITE_INP_CBX_OPT);  
-    page.replace("{otit}", F("no"));
-    page.replace("{oval}", F("0"));
-    page.replace("{oopt}", (settings.u_LDR == 0) ? F("selected") : F(""));
-    page += FPSTR(SITE_INP_CBX_END);  
-    
-    page += FPSTR(SITE_INP_CBX_BGN);  
-    page.replace("{tit}", F("use MDNS"));
-    page.replace("{val}", String(settings.u_MDNS));
-    page.replace("{id}",  F(U_MDNS_TAG)); 
-    page += FPSTR(SITE_INP_CBX_OPT);  
-    page.replace("{otit}", F("yes"));
-    page.replace("{oval}", F("1"));
-    page.replace("{oopt}", (settings.u_MDNS == 1) ? F("selected") : F(""));
-    page += FPSTR(SITE_INP_CBX_OPT);  
-    page.replace("{otit}", F("no"));
-    page.replace("{oval}", F("0"));
-    page.replace("{oopt}", (settings.u_MDNS == 0) ? F("selected") : F(""));
-    page += FPSTR(SITE_INP_CBX_END);  
-
     page += FPSTR(SITE_INP_CBX_BGN);  
     page.replace("{tit}", F("Log Level"));
     page.replace("{id}",  F(U_LOGG_TAG)); 
@@ -541,6 +510,7 @@ void WebsiteMiscConfigPage(){
 
     page += FPSTR(SITE_FORM_END); 
 
+    page += FPSTR(SITE_FIELDSET_END); 
     page += FPSTR(SITE_HREF);  
     page.replace("{tit}", F("Back"));
     page.replace("{dest}", REQ_CONFIG);
