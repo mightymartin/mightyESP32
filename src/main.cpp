@@ -36,7 +36,7 @@ void setup() {
   WebLogInfo("Init Wifimanger");
   //WiFi.hostname(settings.n_hostname);
   WiFiManager wifiManager;  
-  wifiManager.setConnectTimeout(1);
+  wifiManager.setConnectTimeout(10);
   wifiManager.setConfigPortalTimeout(180);
   //wifiManager.setSaveConfigCallback(saveConfigCallback);
   if(settings.u_LOGGING >= LOGLEVEL_DBG){
@@ -57,16 +57,16 @@ void setup() {
   
   //### Init UpdateServer 
   WebLogInfo("Init Updateserver");
-  //httpUpdaterServer.setup(&server,REQ_OTA);
+  httpUpdaterServer.setup(&server,REQ_OTA);
   
   //### Start Webserver
   WebLogInfo("Init Webserver");
-  //server.begin();
+  server.begin();
 
   if(settings.u_MQTT){
     //### Start MQTT
     WebLogInfo("Init MQTT");
-    //MQTTInit();
+    MQTTInit();
   }
 
   WebLogInfo("--- Init End ---");
@@ -76,10 +76,11 @@ void setup() {
 void loop() {
     // put your main code here, to run repeatedly:   
     WebLogTick();
-  
+    TimeTick(); 
+    
     if(settings.u_MQTT){
-      //MQTTTick(); 
+      MQTTTick(); 
     }
 
-    //server.handleClient();  
+    server.handleClient();  
 }
