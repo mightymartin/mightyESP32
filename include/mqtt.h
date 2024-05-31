@@ -5,8 +5,9 @@
 #include <Ticker.h>
 #include "logging.h"
 #include "settings.h"
+#include "HAMqttDevice.h"
 
-#define MQTT_MAX_PACKET_SIZE  1024
+//#define MQTT_MAX_PACKET_SIZE  1024
 
 #define MQTT_TOPIC_PREFIX   "tele/"
 #define MQTT_CMD_TOPIC      "/CMD/+"
@@ -16,7 +17,7 @@ extern String cmdTopic, stateTopic;
 
 extern void MQTTUpdate();
 extern void MQTTSubCallback(char* topic, byte* payload, unsigned int length);
-extern void MQTTPublish();
+extern void MQTTPublish(bool force);
 extern void MQTTInit();
 extern void MQTTTick();
 extern String MQTTStatus();

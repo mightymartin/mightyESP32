@@ -11,7 +11,7 @@
 #define EEPROM_START_ADDRESS    0
 #define EEPROM_SIZE             4095
 
-#define FW_VERSION              "0.1"
+#define FW_VERSION              "0.3"
 #define CONF_WEBSERVER_PORT     80
 #define CONF_WEBSOCKET_PORT     81
 #define CONF_SERIAL_BAUD        115200
@@ -28,6 +28,8 @@
 #define N_NTPINTERVAL_TAG           "NNTPI" 
 #define N_NTPSERVER_TAG             "NNTPS"
 #define N_HOSTNAME_TAG              "NHOST"
+
+#define M_HASS_TAG                  "MHASS"
 #define M_PORT_TAG                  "MPORT"
 #define M_HOST_TAG                  "MBROK"
 #define M_CLIENT_ID_TAG             "MCLID"
@@ -60,12 +62,15 @@ struct Settings_t{
     char        m_user[32]              ;
     char        m_pass[32]              ;
     char        m_topic[32]             ;
-    
+    uint8_t     m_homeassistant         ;    
 }  __attribute__((packed));
 
 extern Settings_t settings;
 
 extern uint8_t    doRestart;
+
+const char PROP_STR[]    PROGMEM    = QUOTE( "{key}":"{val}", );
+const char PROP_INT[]    PROGMEM    = QUOTE( "{key}":{val}, );
 
 extern void     SettingsInit();
 
@@ -85,5 +90,7 @@ extern void     SettingsUpdate();
 extern void     SettingsWifiReset();
 extern void     SettingsSoftRestart();
 extern void     SettingsTick();
+
+extern uint32_t getChipID();
 
 #endif

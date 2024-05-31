@@ -45,9 +45,7 @@ void    SettingsInit(){
 }
 
 void SettingsSetDefaults(){
-    for(int i=0; i<17; i=i+8) {
-	  settings.u_chipid |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-	}
+    settings.u_chipid = getChipID();
     
     strcpy(settings.version,FW_VERSION); 
     
@@ -143,9 +141,6 @@ void    SettingsSetValue(String key, String value){
     }
 }
 
-const char PROP_STR[]    PROGMEM    = QUOTE( "{key}":"{val}", );
-const char PROP_INT[]    PROGMEM    = QUOTE( "{key}":{val}, );
-
 String  getPropInt(String key, int32_t val){
     String ret = FPSTR(PROP_INT);
     ret.replace("{key}", key);
@@ -176,6 +171,15 @@ String    SettingsToJson(){
 //##############
 //### misc. 
 //##############
+
+uint32_t getChipID(){
+    uint32_t uid = 0; 
+    for(int i=0; i<17; i=i+8) {
+	  uid |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+	}
+    return uid;
+}
+
 void SettingsSoftRestart(){
     doRestart = 1;
 }

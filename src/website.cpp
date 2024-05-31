@@ -5,6 +5,7 @@ WebServer *_server;
 void WebsiteInit(WebServer *server){
     _server = server;
     _server->on(REQ_START, WebsiteStartPage);
+    _server->on(REQ_DYNSTART, WebsiteDynamicStartPage);
     _server->on(REQ_CONFIG, WebsiteConfigPage);    
     _server->on(REQ_CONF_NETWORK, WebsiteNetworkConfigPage);    
     _server->on(REQ_CONF_MQTT, WebsiteMQTTConfigPage);        
@@ -48,6 +49,10 @@ void WebsiteAction(){
             message = "Wifi Reset; Wifimanager enabled";
         }
 
+        if(message.length() > 0){
+            WebLogInfo(message);
+        }
+
         if(reqReboot > 0 ){
             //Seite muss neu geladen werden. Nach X sekunden wird redirected
             String page = FPSTR(SITE_HEAD);    
@@ -66,18 +71,10 @@ void WebsiteAction(){
     }
 }
 
-void WebsiteStartPage(){
-    WebsiteAction();
+void WebsiteDynamicStartPage(){
+    String page = FPSTR(SITE_HEAD);  
+    page += FPSTR(SITE_BGN_EMBEDDED);  
 
-    String page = FPSTR(SITE_HEAD);    
-    page += FPSTR(SITE_BGN);  
-
-    page += FPSTR(SITE_DL_LINE);  
-    page.replace("{tit}", F("Flash Chip ID"));
-    page.replace("{val}", String("TODO CHIPID") );
-    
-    page += FPSTR(SITE_NL); 
-    
     if(settings.u_ONSTATE){
         page += FPSTR(SITE_HREF_EXT);  
         page.replace("{tit}", F("ON"));
@@ -94,6 +91,21 @@ void WebsiteStartPage(){
         page.replace("{dest}", REQ_START);
     }   
 
+    WebsiteSend(page);  
+}
+
+void WebsiteStartPage(){
+    WebsiteAction();
+
+    String page = FPSTR(SITE_HEAD);    
+    page += FPSTR(SITE_BGN);  
+
+    //dynamic Startpage    
+    page += FPSTR(SITE_IFRAME); 
+    page.replace("{src}", REQ_DYNSTART);            
+    
+    
+    //static Startpage
     page += FPSTR(SITE_NL); 
     page += FPSTR(SITE_NL); 
 
@@ -137,7 +149,7 @@ void WebsiteFirmwareUpdate(){
 
     String page = FPSTR(SITE_HEAD);    
     page += FPSTR(SITE_BGN_FULL);  
-    page.replace("{pcat}" , F("Fimrwareupdate"));
+    page.replace("{pcat}" , F("Firmwareupdate"));
 
     page += FPSTR(SITE_UPDATE_FORM);
     page.replace("{dest}" , REQ_OTA);
@@ -206,10 +218,10 @@ void WebsiteInfoPage(){
 
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("Chip ID"));
-    page.replace("{val}", String("TODO CHIPID") );
+    page.replace("{val}", String(settings.u_chipid) );
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("Flash Chip ID"));
-    page.replace("{val}", String("TODO CHIPID") );
+    page.replace("{val}", String(settings.u_chipid) );
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("IDE Flash Size"));
     page.replace("{val}", String(ESP.getFlashChipSize() / 1024)+F("kB"));    
@@ -242,18 +254,21 @@ void WebsiteInfoPage(){
 
     page += F("<br/>");  
 
+     page += FPSTR(SITE_DL_LINE);  
+    page.replace("{tit}", F("Cores"));
+    page.replace("{val}", String(ESP.getChipCores()));
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("CPU Freq"));
-    page.replace("{val}", String(ESP.getCpuFreqMHz())+F("Mhz")  );
+    page.replace("{val}", String(ESP.getCpuFreqMHz())+F("Mhz"));
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("Model"));
-    page.replace("{val}", ESP.getChipModel() );
+    page.replace("{val}", ESP.getChipModel());    
     page += FPSTR(SITE_DL_LINE);  
-    page.replace("{tit}", F("Core"));
-    page.replace("{val}", ESP.getSdkVersion() );
+    page.replace("{tit}", F("Revision"));
+    page.replace("{val}", String(ESP.getChipRevision()));    
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("SDK"));
-    page.replace("{val}", ESP.getSdkVersion() );
+    page.replace("{val}", ESP.getSdkVersion());
     page += FPSTR(SITE_DL_LINE);  
     page.replace("{tit}", F("Time"));
     page.replace("{val}", String(TimeformatedDateTime()) );
@@ -437,6 +452,20 @@ void WebsiteMQTTConfigPage(){
     page.replace("{id}",  F(M_TOPIC_TAG)); 
     page.replace("{val}", String(settings.m_topic));
     page.replace("{len}", F("32"));
+
+    page += FPSTR(SITE_INP_CBX_BGN);  
+    page.replace("{tit}", F("Homeassistant mode?"));
+    page.replace("{val}", String(settings.m_homeassistant));
+    page.replace("{id}",  F(M_HASS_TAG)); 
+    page += FPSTR(SITE_INP_CBX_OPT);  
+    page.replace("{otit}", F("yes"));
+    page.replace("{oval}", F("1"));
+    page.replace("{oopt}", (settings.m_homeassistant == 1) ? F("selected") : F(""));
+    page += FPSTR(SITE_INP_CBX_OPT);  
+    page.replace("{otit}", F("no"));
+    page.replace("{oval}", F("0"));
+    page.replace("{oopt}", (settings.m_homeassistant == 0) ? F("selected") : F(""));
+    page += FPSTR(SITE_INP_CBX_END); 
 
     page += FPSTR(SITE_BUTTON);  
     page.replace("{tit}", F("Save & Restart"));

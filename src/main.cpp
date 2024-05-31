@@ -13,6 +13,17 @@
 //##############################
 WebServer server(CONF_WEBSERVER_PORT);
 HTTPUpdateServer httpUpdaterServer;
+Ticker restartTicker;
+
+//##############################
+//## Tools
+//##############################
+void restartOnConnectionLost(){
+    //Connection Lost, Need Restart
+    if (WiFi.status() != WL_CONNECTED){
+        ESP.restart();
+    }
+}
 
 //##############################
 //## Setup
@@ -33,21 +44,22 @@ void setup() {
 
   //### Wifimanager
 
-  WebLogInfo("Init Wifimanger");
-  //WiFi.hostname(settings.n_hostname);
+    WebLogInfo("Init Wifimanger");
   WiFiManager wifiManager;  
-  wifiManager.setConnectTimeout(10);
+  wifiManager.setConnectTimeout(30);
   wifiManager.setConfigPortalTimeout(180);
-  //wifiManager.setSaveConfigCallback(saveConfigCallback);
+  wifiManager.setWiFiAutoReconnect(true);
+  
   if(settings.u_LOGGING >= LOGLEVEL_DBG){
     wifiManager.setDebugOutput(true);
   }  
   wifiManager.autoConnect(settings.n_hostname);
 
-  WebLogInfo("Init Weblogging");
+  //### Logging
   WebLogInit();
+  WebLogInfo("Init Weblogging");
 
-  //NTP Zeit
+  //### NTP Zeit
   WebLogInfo("Init Time");
   TimeInit();
 
@@ -68,6 +80,10 @@ void setup() {
     WebLogInfo("Init MQTT");
     MQTTInit();
   }
+
+  //### Start restartTicker
+  restartTicker.attach_ms(30000,restartOnConnectionLost);
+
 
   WebLogInfo("--- Init End ---");
 

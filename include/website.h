@@ -9,6 +9,8 @@
 
 #define REQ_START           "/"
 
+#define REQ_DYNSTART        "/dyn"
+
 #define REQ_INFO            "/inf"
 #define REQ_FACTORY_RESET   "/fcr"
 #define REQ_OTA             "/ota"
@@ -18,12 +20,15 @@
 #define REQ_CONF_MQTT       "/cmq"
 #define REQ_CONF_MISC       "/cmi"
 
+//micronova
+#define REQ_CONF_MICRONOVA  "/cmn"
+
 #define REQ_CONSOLE         "/con"
 #define REQ_OTA_SELECT      "/otasel"
 
 
 
-const char SITE_HEAD[]          PROGMEM = QUOTE(    <html>
+const char SITE_HEAD[]          PROGMEM    = QUOTE( <html>
                                                         <head>
                                                             <meta charset="utf-8">
                                                             <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">                                                            
@@ -71,6 +76,9 @@ const char SITE_HEAD[]          PROGMEM = QUOTE(    <html>
                                                                     cursor:pointer;
                                                                     margin-top: 10px;
                                                                 }
+                                                                fieldset{
+                                                                    margin: 0px;
+                                                                }
                                                                 button:hover{
                                                                     background-color:#0e70a4;
                                                                 }
@@ -90,45 +98,66 @@ const char SITE_HEAD[]          PROGMEM = QUOTE(    <html>
                                                                     text-decoration:none;
                                                                 }
                                                                 .p{
-                                                                    float:left;
                                                                     text-align:left;
                                                                 }
                                                                 .q{
-                                                                    float:right;
                                                                     text-align:right;
+                                                                }
+                                                                .c{
+                                                                    padding:0px; 
+                                                                    display:flex;
+                                                                    justify-content: space-between;
                                                                 }
                                                             </style>
                                                         </head>);
 
-const char SITE_BGN_FULL[]           PROGMEM    =  QUOTE(    <body>
-                                                            <div style="text-align:left;display:inline-block;min-width:340px;">
-                                                                <div style="text-align:center;">                                                            
-                                                                    <h2>{phead}</h2>
-                                                                </div>
-                                                                <fieldset>
-                                                                    <legend>
-                                                                        <b>{pcat}</b>
-                                                                    </legend>);
-const char SITE_END_FULL[]           PROGMEM    = QUOTE(             </fieldset>
+const char SITE_IFRAME[]        PROGMEM    = QUOTE( <iframe type="text/html" src="{src}" scrolling="no" frameborder="0" marginheight="0px" marginwidth="0px" width="100%" onload="this.style.height=(this.contentWindow.document.body.scrollHeight)+'px';" allowfullscreen> </iframe>);
+
+
+const char SITE_BGN_FULL[]      PROGMEM    = QUOTE( <body>
+                                                        <div style="text-align:left;display:inline-block;min-width:340px;">
+                                                            <div style="text-align:center;">                                                            
+                                                                <h2>{phead}</h2>
+                                                            </div>
+                                                            <fieldset>
+                                                                <legend>
+                                                                    <b>{pcat}</b>
+                                                                </legend>);
+
+const char SITE_END_FULL[]      PROGMEM    = QUOTE(             </fieldset>
                                                             </div>
                                                         </body>
                                                     </html>);
 
-const char SITE_BGN[]      PROGMEM    =  QUOTE(    <body>
-                                                            <div style="text-align:left;display:inline-block;min-width:340px;">
-                                                                <div style="text-align:center;">                                                            
-                                                                    <h2>{phead}</h2>
-                                                                </div>);
-const char SITE_END[]      PROGMEM    = QUOTE(         </div>
+
+const char SITE_BGN_EMBEDDED[]  PROGMEM    = QUOTE( <body style="margin: 0px">
+                                                        <script>
+                                                            function autoRefresh() {
+                                                                window.location = window.location.href;
+                                                            }
+                                                            setInterval('autoRefresh()', 5000);
+                                                        </script>
+                                                        <div style="text-align:left;display:inline-block;min-width:100%;padding: 0px">
+                                                    );
+
+const char SITE_BGN[]           PROGMEM    = QUOTE( <body>
+                                                        <div style="text-align:left;display:inline-block;min-width:340px;">
+                                                            <div style="text-align:center;">                                                            
+                                                                <h2>{phead}</h2>
+                                                            </div>);
+
+const char SITE_END[]           PROGMEM    = QUOTE(         </div>
                                                         </body>
                                                     </html>);
 
-const char SITE_FIELDSET_BGN[]      PROGMEM    =  QUOTE(    <fieldset>
+                                                
+
+const char SITE_FIELDSET_BGN[]  PROGMEM    = QUOTE( <fieldset>
                                                         <legend>
                                                             <b>{pcat}</b>
                                                         </legend>);
 
-const char SITE_FIELDSET_END[]      PROGMEM    = QUOTE(     </fieldset>);
+const char SITE_FIELDSET_END[]  PROGMEM    = QUOTE( </fieldset>);
 
 const char SITE_FORM_BGN[]      PROGMEM    = QUOTE( <form method="post" action="{dest}">);
 const char SITE_FORM_END[]      PROGMEM    = QUOTE( </form>);
@@ -136,22 +165,42 @@ const char SITE_FORM_END[]      PROGMEM    = QUOTE( </form>);
 const char SITE_DL_BGN[]        PROGMEM    = QUOTE( <dl>);
 const char SITE_DL_END[]        PROGMEM    = QUOTE( </dl>);
 
-const char SITE_NL[]        PROGMEM    = QUOTE( <br/>);
+const char SITE_NL[]            PROGMEM    = QUOTE( <br/>);
 
-const char SITE_DL_LINE[]       PROGMEM    = QUOTE( <dt><b>{tit}</b>:</dt>
-                                                    <dd>{val}</dd>);
+const char SITE_SEPARATOR[]     PROGMEM    = QUOTE( <hr>);
+
+const char SITE_DL_LINE[]       PROGMEM    = QUOTE( <div class="c">
+                                                        <div class="p"><b>{tit}</b>:</div>
+                                                        <div class="q">{val}</div>
+                                                    </div>);
 
 const char SITE_INP_T[]         PROGMEM    = QUOTE( <b>{tit}</b> [l:{len}] ({val})<br/>
 					                                <input id="{id}" name="{id}" maxlength="{len}" value="{val}"><br/>
 					                                <br/>);
 
 const char SITE_INP_N[]         PROGMEM    = QUOTE( <b>{tit}</b> [{min} - {max}] ({val})<br/>
-					                                <input type="number" id="{id}" name="{id}" min="{min}" max="{max}" step="{step}" value="{val}"><br/>
+					                                <input type="number" id="{id}" name="{id}" min="{min}" max="{max}" step="{step}" value="{val}" ><br/>
 					                                <br/>);
 
 const char SITE_INP_NR[]        PROGMEM    = QUOTE( <b>{tit}</b> [{min} - {max}] ({val})<br/>
-					                                <input type="range" id="{id}" name="{id}" min="{min}" max="{max}" step="{step}" value="{val}"><br/>
+					                                <input {opt} type="range" id="{id}" name="{id}" min="{min}" max="{max}" step="{step}" value="{val}"><br/>
 					                                <br/>);
+
+const char SITE_INP_UPDOWN[]    PROGMEM    = QUOTE( <div style="display: flex; justify-content: flex-end; padding: 0px;">
+                                                            <div style="padding: 20px 5px; text-align: left;">
+                                                                <b>{tit}</b>
+                                                            </div>
+                                                            <form method="post" action="{dest}" style="width: 40px;">
+                                                                <button name="ACTION" value="{id}_DOWN" type="submit" class="button">-</button>
+                                                            </form>
+                                                            <div style="padding: 20px 0px; text-align: center;">
+                                                                {val}
+                                                            </div>
+                                                            <form method="post" action="{dest}" style="width: 40px;">
+                                                                <button name="ACTION" value="{id}_UP" type="submit" class="button">+</button>
+                                                            </form>
+                                                        </div>
+					                                <br/>);                                                    
 
 const char SITE_INP_CBX_BGN[]   PROGMEM    = QUOTE( <b>{tit}</b> ({val})<br/>
                                                     <select id="{id}" name="{id}"> );
@@ -208,6 +257,7 @@ const char SITE_CONSOLE[]       PROGMEM    = QUOTE( <textarea readonly="" id="CO
 
 extern void WebsiteInit(WebServer *server);
 extern void WebsiteStartPage();
+extern void WebsiteDynamicStartPage();
 
 extern void WebsiteModesPage ();
 extern void WebsiteModesConfPage ();
@@ -224,6 +274,9 @@ extern void WebsiteLDRConfigPage();
 extern void WebsiteMiscConfigPage();
 extern void WebsiteInfoPage();
 extern void WebsiteConsolePage();
+
+//micronova
+extern void WebsiteMicronovaConfigPage();
 
 extern void WebsiteSend(String page);
 
